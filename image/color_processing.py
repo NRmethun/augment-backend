@@ -2,10 +2,7 @@
 import cv2
 from PIL import Image 
 import numpy as np 
-
-
 import random
-
 
 def brightness(img, low, high):
     value = random.uniform(low, high)

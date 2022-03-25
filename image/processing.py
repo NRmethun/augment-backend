@@ -1,16 +1,12 @@
 
-
 import cv2
 from PIL import Image 
 import numpy as np 
-
-
 import random
 
 def fill(img, h, w):
     img = cv2.resize(img, (h, w), cv2.INTER_CUBIC)
     return img
-
 
 #  shifting        
 def horizontal_shift(img, ratio=0.0):
@@ -77,7 +73,6 @@ def rotation(img, angle):
     return img
 
 #  moDEING 
-    
 def nearest_mode(img, left, right):
     nearest = cv2.copyMakeBorder(img, 0, 0, left, right, cv2.BORDER_REPLICATE)
     return nearest 
@@ -120,8 +115,6 @@ def horizontal_shift_mode(img, ratio , type):
         else :
             fill = constant_mode(img, 0, -1*to_shift)
     return fill
-
- 
 
 #### //////////////////////// 
 

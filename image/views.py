@@ -1,144 +1,128 @@
+from distutils.command.config import config
 from logging import exception
 from django.shortcuts import render
-
-# Create your views here.
-
-
-# from django.db.models.fields.related import _ChoiceNamedGroup
-# from asyncio.windows_events import NULL
 from distutils import extension
 from sys import audit
 from rest_framework import viewsets, parsers
-from django.http import response
+from django.http import HttpResponse, response
 from django.shortcuts import render
-
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sklearn import exceptions
 from .models import ImageData
-
 from rest_framework import viewsets
 from django.db.models import Q
-#from resource import serializers
 from django.core import serializers
 from rest_framework import status
 from rest_framework.exceptions import NotFound 
 from django.http import FileResponse 
-
 from django.core.files.storage import FileSystemStorage
-
-
 from PIL import Image
 import numpy as np
 from io import BytesIO
 from django.core.files.base import ContentFile
 import matplotlib.pyplot as plt
 from .utils import get_filtered_image 
-
 import base64
+
+
+from  .processing import horizontal_shift ,vertical_shift,zoom,horizontal_flip,vertical_flip,rotation,horizontal_shift_mode
+from .color_processing import brightness
+import pyrebase 
+
+config ={
+  "apiKey": "AIzaSyAa0h42SvEScIeJDC3T6QZlQh_bGR-jZkY",
+  "authDomain": "augma-de550.firebaseapp.com",
+  "projectId": "augma-de550",
+  "databaseURL": "https://augma-de550-default-rtdb.firebaseio.com",
+  "storageBucket": "augma-de550.appspot.com",
+  "messagingSenderId": "619267377473",
+  "appId": "1:619267377473:web:7a99d942fd70c8e68279c0",
+  "measurementId": "G-XCXGKCN290"
+}
+
+firebase = pyrebase.initialize_app(config)
+storage = firebase.storage()
+auth =firebase.auth() 
+
+def get_URL(img,name):
+    im_pil = Image.fromarray(img)
+    img = im_pil.resize((224,224), Image.ANTIALIAS)
+    myFile = "D:/Data-augmentation/augma/media/images/"+name+".jpeg"
+    img.save(myFile)
+    storage.child("myFile").put(myFile)
+    email="nrmethun@gmail.com"
+    password ="methun123" 
+    user =auth.sign_in_with_email_and_password(email,password)
+    url = storage.child('filename.jpeg').get_url( user['idToken'] )
+    return url 
+
 @api_view(['POST'])
-def get_content(request):
+def image_processing(request):
     try:
+
         label= request.POST.get('label')
-        print('aa')
         img = request.FILES["image"] 
-        # byteee = base64.b64decode(img)  
-
-
         pil_img = Image.open(img)
         cv_img = np.array(pil_img)
-        img = get_filtered_image(cv_img,'bluring')
 
-        img = (img) 
-        # print(img) 
+        ### vertical shift and ratio  
+        vertical_shift_img = vertical_shift(cv_img , 0.5) 
+        v_shift_url=get_URL(vertical_shift_img,"v_shift_img") 
 
-        # plt.imshow(img)
-        # plt.show() 
-        print('ssa')
-        # byteee = base64.b64decode(img) 
+        ###  horizontal shift and ratio  
+        horizontal_shift_img = horizontal_shift(cv_img , 0.5) 
+        h_shift_url =get_URL(horizontal_shift_img,"h_shift_img") 
 
-        
-        
+        # ### Zooming
+        zoom_img = zoom(cv_img, .1)
+        zoom_url = get_URL(zoom_img ,"zoom_img") 
 
-        
+        ### horizontal Flip 
+        horizontal_flip_img = horizontal_flip(cv_img, True) 
+        h_flip_url = get_URL(horizontal_flip_img,"h_flip_img") 
 
-        # with open(request.FILES["image"] , "rb") as image_file:
-        #     encoded_string = base64.b64encode(image_file.read())
+        ### vertical Flip 
+        vertical_flip_img = vertical_flip(cv_img,True) 
+        v_flip_url = get_URL(vertical_flip_img,"h_flip_img") 
 
-        # print(encoded_string) 
-        # dlimage = requests.request("GET", imageURL)
-        encodedImage =  base64.encodestring(img)
+        ### Rotation
+        rotate_img = rotation(cv_img, 30) 
+        rotate_url = get_URL(rotate_img,"rotate_img") 
 
+        ### MODING ...wrap ,nearest , reflect , constant
+        special_mode_img = horizontal_shift_mode(cv_img, .5 ,'wrap')
+        special_mode_url = get_URL(special_mode_img,"special_mode_img") 
 
+        response={
+            "status": 200 ,
+            "message":"image Url data successfully found" ,
+            "success":True,
+            "URLS" : 
+                {
+                    "v_shift_url":v_shift_url ,
+                    "h_shift_url":h_shift_url ,
+                    "zoom_url"   :zoom_url ,
+                    "h_flip_url" :h_flip_url,
+                    "v_flip_url":v_flip_url ,
+                    "rotate_url":rotate_url ,
+                    "special_mode_url":special_mode_url
+                }
+        }
+        return Response(response) 
 
-
-        # print(base64_message  )
-        # plt.imshow(byteee)
-        # plt.show() 
-                            # uploaded_image = request.FILES['image']
-                            # fs = FileSystemStorage()
-                            # filename = fs.save(uploaded_image.name, uploaded_image)
-                            # uploaded_file_url = fs.url(filename) 
-        
-        # code = get_code(uploaded_file_url)
-        # response={
-        #             "response_code": 200,
-        #             "response_text": 'Data found successfully',
-        #             "success": True,
-        #             "data": img 
-
-        #             }
-        # response = {'uploaded_file_url': uploaded_file_url}
-
-        return Response({"response":"response", "img": 'byteee' } )
     except  :
-        # print(e) 
         response ={
                     "response_code" : 404,
-                    "response_text" : 'failed to get Resources',
+                    "response_text" : 'failed to Image Urls',
                     "success" : False,
                     "error":[ {
                         "message": "failed to get Resources",
                         "code":404
                     }]
                 }
-
         return Response(response) 
-
-from  .processing import horizontal_shift ,vertical_shift,zoom,horizontal_flip,vertical_flip,rotation,horizontal_shift_mode
-
-from .color_processing import brightness
-@api_view(['POST'])
-def image_processing(request):
-
-    label= request.POST.get('label')
-    img = request.FILES["image"] 
-
-    pil_img = Image.open(img)
-    cv_img = np.array(pil_img)
-    # ### vertical shift and ratio  
-    # img = vertical_shift(cv_img , 0.5) 
-    # ###  horizontal shift and ratio  
-    # img = horizontal_shift(cv_img , 0.5) 
-    # ### Zooming
-    # img = zoom(cv_img, .1) 
-    # ### horizontal Flip 
-    # img = horizontal_flip(cv_img, True)
-    # ### vertical Flip 
-    # img = vertical_flip(cv_img,True) 
-    # ### Rotation
-    # img = rotation(cv_img, 30)
-    ### MODING ...
-    # img = horizontal_shift_mode(cv_img, .7 ,'nearest')
-    ##### upto avobe geo translation 
-
-    img = brightness(cv_img, 0.5, 3)
-    
-    plt.imshow(img)
-    plt.show()  
-    return 
-
 
 
 
