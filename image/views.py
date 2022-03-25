@@ -99,16 +99,45 @@ def image_processing(request):
             "status": 200 ,
             "message":"image Url data successfully found" ,
             "success":True,
-            "URLS" : 
+            "data":[
                 {
-                    "v_shift_url":v_shift_url ,
-                    "h_shift_url":h_shift_url ,
-                    "zoom_url"   :zoom_url ,
-                    "h_flip_url" :h_flip_url,
-                    "v_flip_url":v_flip_url ,
-                    "rotate_url":rotate_url ,
-                    "special_mode_url":special_mode_url
+                    "label": "Horizontal Shift",
+                    "url" : h_shift_url ,
+                    "code" : "some code" 
+                },
+                {
+                    "label": "Vertical Shift",
+                    "url" : v_shift_url ,
+                    "code" : "some code" 
+                },
+                {
+                    "label": "Zoom",
+                    "url" : zoom_url ,
+                    "code" : "some code" 
+                },
+                {
+                    "label": "Horizontal Flip",
+                    "url" : h_flip_url ,
+                    "code" : "some code" 
+                },
+                 {
+                    "label": "Vertical Flip",
+                    "url" : v_flip_url ,
+                    "code" : "some code" 
+                },
+                {
+                    "label": "Rotate",
+                    "url" : rotate_url ,
+                    "code" : "some code" 
+                },
+                {
+                    "label": "Special Mode (Wrap,Nearest,Constant,Reflect)",
+                    "url" : special_mode_url ,
+                    "code" : "some code" 
                 }
+                
+            ]
+            
         }
         return Response(response) 
 
