@@ -246,7 +246,7 @@ def image_processing(request):
                 except:
                     pass 
 
-            elif item['name'] == 'brightness' :
+            elif str(item['name']).strip() == 'brightness' :
                 try:
                     # val =float(item['value']) /100 
                    ### Brightness 
@@ -254,8 +254,8 @@ def image_processing(request):
                     bright_url= get_URL(bright_img,"bright_image")
 
                     t= {          
-                     "label": "Image Wrap",
-                    "url" : wrap_url ,
+                     "label": "Brightness",
+                    "url" : bright_url ,
                     "code" : "some code" 
                     } 
                     data.append(t) 
@@ -315,7 +315,7 @@ def image_processing(request):
                 except:
                     pass 
 
-            elif str(item['name']).strip() == 'to_r' :
+            elif str(item['name']).strip() == 'to_red' :
                 try:
                     # val =float(item['value']) /100 
                     ### red channel 
@@ -332,7 +332,7 @@ def image_processing(request):
                 except:
                     pass 
             
-            elif str(item['name']).strip() == 'to_g' :
+            elif str(item['name']).strip() == 'to_green' :
                 try:
                     # val =float(item['value']) /100 
                     ### green channel 
@@ -349,7 +349,7 @@ def image_processing(request):
                 except:
                     pass 
 
-            elif str(item['name']).strip()  == 'to_b' :
+            elif str(item['name']).strip()  == 'to_blue' :
                 try:
                     # val =float(item['value']) /100 
                     ### green channel 
