@@ -46,17 +46,24 @@ firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
 auth =firebase.auth() 
 
+import random
 def get_URL(img,name):
     im_pil = Image.fromarray(img)
     img = im_pil.resize((224,224), Image.ANTIALIAS)
-    myFile = "D:/Data-augmentation/augma/media/images/"+name+".jpeg"
-    img.save(myFile)
-    storage.child("myFile").put(myFile)
-    email="nrmethun@gmail.com"
-    password ="methun123" 
-    user =auth.sign_in_with_email_and_password(email,password)
-    url = storage.child('filename.jpeg').get_url( user['idToken'] )
-    return url 
+    # myFile = "D:/Data-augmentation/augma/media/images/"+name+".jpeg"
+    x= random.randint(2,10000) 
+
+    myFile = "D:/Data-augmentation/augment-frontend/apps/augment-app/src/assets/images/"+name+ str(x)  + ".jpeg"
+    img.save(myFile) 
+    saved_name = name+ str(x)  + ".jpeg"
+    # storage.child("myFile"+name).put(myFile)
+    # email="nrmethun@gmail.com"
+    # password ="methun123" 
+    # user =auth.sign_in_with_email_and_password(email,password)
+    # url = storage.child("myFile"+name).get_url( user['idToken'] )
+    # print(url)
+    # print(">>>")
+    return saved_name 
 
 @api_view(['POST'])
 def image_processing(request):
@@ -131,7 +138,7 @@ def image_processing(request):
                     "code" : "some code" 
                 },
                 {
-                    "label": "Special Mode (Wrap,Nearest,Constant,Reflect)",
+                    "label": "Image Wrap",
                     "url" : special_mode_url ,
                     "code" : "some code" 
                 }
