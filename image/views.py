@@ -25,6 +25,7 @@ from django.core.files.base import ContentFile
 import matplotlib.pyplot as plt
 from .utils import get_filtered_image 
 import base64
+import json
 
 
 from  .processing import horizontal_shift ,vertical_shift,zoom,horizontal_flip,vertical_flip,rotation,horizontal_shift_mode
@@ -53,7 +54,7 @@ def get_URL(img,name):
     # myFile = "D:/Data-augmentation/augma/media/images/"+name+".jpeg"
     x= random.randint(2,10000) 
 
-    myFile = "D:/Data-augmentation/augment-frontend/apps/augment-app/src/assets/images/"+name+ str(x)  + ".jpeg"
+    myFile = "F:/MyProjects/augment/apps/augment-app/src/assets/images/"+name+ str(x)  + ".jpeg"
     img.save(myFile) 
     saved_name = name+ str(x)  + ".jpeg"
     # storage.child("myFile"+name).put(myFile)
@@ -69,7 +70,10 @@ def get_URL(img,name):
 def image_processing(request):
     try:
 
-        label= request.POST.get('label')
+        # label= request.POST.get('types')
+        print('check')
+        city_name = json.loads(request.POST.get('types'))
+        print(city_name)
         img = request.FILES["image"] 
         pil_img = Image.open(img)
         cv_img = np.array(pil_img)
