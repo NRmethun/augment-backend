@@ -4,4 +4,5 @@ from rest_framework.routers import SimpleRouter
 
 urlpatterns =  [
     path('augment/',views.image_processing, name='add_resource_info'),
+    path('demo/',views.demo, name='node'),
     ]

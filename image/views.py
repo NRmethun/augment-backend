@@ -28,8 +28,10 @@ import base64
 import json
 
 
-from  .processing import horizontal_shift ,vertical_shift,zoom,horizontal_flip,vertical_flip,rotation,horizontal_shift_mode
-from .color_processing import brightness
+from  .processing import horizontal_shift, sharpen ,vertical_shift,zoom,horizontal_flip,vertical_flip,rotation,horizontal_shift_mode
+from .processing import blur ,sharpen
+
+from .color_processing import brightness ,contrast ,to_gray ,to_hsv ,to_b,to_g,to_r
 import pyrebase 
 
 config ={
@@ -53,9 +55,12 @@ def get_URL(img,name):
     img = im_pil.resize((224,224), Image.ANTIALIAS)
     # myFile = "D:/Data-augmentation/augma/media/images/"+name+".jpeg"
     x= random.randint(2,10000) 
-
-    myFile = "F:/MyProjects/augment/apps/augment-app/src/assets/images/"+name+ str(x)  + ".jpeg"
-    img.save(myFile) 
+    
+    try:
+        myFile = "F:/MyProjects/augment/apps/augment-app/src/assets/images/"+name+ str(x)  + ".jpeg"
+        img.save(myFile) 
+    except:
+        pass 
     saved_name = name+ str(x)  + ".jpeg"
     # storage.child("myFile"+name).put(myFile)
     # email="nrmethun@gmail.com"
@@ -72,82 +77,201 @@ def image_processing(request):
 
         # label= request.POST.get('types')
         print('check')
-        city_name = json.loads(request.POST.get('types'))
-        print(city_name)
+        types = json.loads(request.POST.get('types'))
+        print(types)
         img = request.FILES["image"] 
         pil_img = Image.open(img)
         cv_img = np.array(pil_img)
+        
+        data =[]
 
+        for item in types:
         ### vertical shift and ratio  
-        vertical_shift_img = vertical_shift(cv_img , 0.5) 
-        v_shift_url=get_URL(vertical_shift_img,"v_shift_img") 
+
+            if item['name'] == 'vertical_shift':
+                try:
+                    val =float(item['value']) /100 
+                    vertical_shift_img = vertical_shift(cv_img , val ) 
+                    v_shift_url=get_URL(vertical_shift_img,"v_shift_img") 
+                    t= {   
+                    "label": "Vertical Shift",
+                    "url" : v_shift_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+                except:
+                    pass 
 
         ###  horizontal shift and ratio  
-        horizontal_shift_img = horizontal_shift(cv_img , 0.5) 
-        h_shift_url =get_URL(horizontal_shift_img,"h_shift_img") 
+            elif item['name'] == 'horizontal_shift' :
+                try:
+                    val =float(item['value']) /100 
+                    horizontal_shift_img = horizontal_shift(cv_img , val ) 
+                    h_shift_url =get_URL(horizontal_shift_img,"h_shift_img") 
+
+                    t= {          
+                     "label": "Horizontal Shift",
+                    "url" : h_shift_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
 
         # ### Zooming
-        zoom_img = zoom(cv_img, .1)
-        zoom_url = get_URL(zoom_img ,"zoom_img") 
+            elif item['name'] == 'zoom' :
+                try:
+                    val =float(item['value']) /100 
+                    zoom_img = zoom(cv_img, val)
+                    zoom_url = get_URL(zoom_img ,"zoom_img") 
 
-        ### horizontal Flip 
-        horizontal_flip_img = horizontal_flip(cv_img, True) 
-        h_flip_url = get_URL(horizontal_flip_img,"h_flip_img") 
+                    t= {          
+                      "label": "Zoom",
+                    "url" : zoom_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
 
-        ### vertical Flip 
-        vertical_flip_img = vertical_flip(cv_img,True) 
-        v_flip_url = get_URL(vertical_flip_img,"h_flip_img") 
+                except:
+                    pass 
+            
+            elif item['name'] == 'horizontal_flip' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### horizontal Flip 
+                    horizontal_flip_img = horizontal_flip(cv_img, True) 
+                    h_flip_url = get_URL(horizontal_flip_img,"h_flip_img") 
 
-        ### Rotation
-        rotate_img = rotation(cv_img, 30) 
-        rotate_url = get_URL(rotate_img,"rotate_img") 
+                    t= {          
+                      
+                      "label": "Horizontal Flip",
+                    "url" : h_flip_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif item['name'] == 'vertical_flip' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### vertical Flip 
+                    vertical_flip_img = vertical_flip(cv_img,True) 
+                    v_flip_url = get_URL(vertical_flip_img,"h_flip_img") 
+
+                    t= {          
+                      
+                      "label": "Vertical Flip",
+                    "url" : v_flip_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+
+            elif item['name'] == 'rotation' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### Rotation
+                    rotate_img = rotation(cv_img, int(item['value']) ) 
+                    rotate_url = get_URL(rotate_img,"rotate_img") 
+
+                    t= {          
+                      
+                      "label": "Rotation",
+                    "url" : rotate_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            
+            elif item['name'] == 'blur' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### Blur image 
+                    blur_img = blur( cv_img , int(item['value']) ) 
+                    blur_url= get_URL(blur_img,"blur_img") 
+
+                    t= {          
+                      
+                       "label": "Blur",
+                    "url" : blur_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif item['name'] == 'sharpen' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### Blur image 
+                    sharp_img = sharpen( cv_img  ) 
+                    sharp_url= get_URL(sharp_img,"sharp_img") 
+
+                    t= {          
+                      
+                    "label": "Sharp",
+                    "url" : sharp_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+        
+
 
         ### MODING ...wrap ,nearest , reflect , constant
         special_mode_img = horizontal_shift_mode(cv_img, .5 ,'wrap')
         special_mode_url = get_URL(special_mode_img,"special_mode_img") 
 
+
+        ### Brightness 
+        bright_img = brightness( cv_img ,180 ) 
+        bright_url= get_URL(bright_img,"bright_image")
+
+        ### contrast 
+        contrast_img = contrast( cv_img ,180 ) 
+        contrast_url= get_URL(contrast_img,"contrast_img") 
+
+        ### to rgb to hsv 
+        hsv_img = to_hsv(cv_img) 
+        hsv_url = get_URL(hsv_img,"hsv_img")  
+
+        ### to rgb to gray 
+        gray_img = to_gray(cv_img) 
+        gray_url = get_URL(gray_img ,'gray_img') 
+
+        ### red channel 
+        red_img = to_r(cv_img) 
+        red_url = get_URL(red_img ,'red_img') 
+
+        ### green channel 
+        green_img = to_g(cv_img) 
+        green_url = get_URL(green_img ,'green_img') 
+
+        ### blue channel 
+        blue_img = to_b(cv_img) 
+        blue_url = get_URL(blue_img ,'blue_img') 
+         
+
+
+        
+
         response={
             "status": 200 ,
             "message":"image Url data successfully found" ,
             "success":True,
-            "data":[
-                {
-                    "label": "Horizontal Shift",
-                    "url" : h_shift_url ,
-                    "code" : "some code" 
-                },
-                {
-                    "label": "Vertical Shift",
-                    "url" : v_shift_url ,
-                    "code" : "some code" 
-                },
-                {
-                    "label": "Zoom",
-                    "url" : zoom_url ,
-                    "code" : "some code" 
-                },
-                {
-                    "label": "Horizontal Flip",
-                    "url" : h_flip_url ,
-                    "code" : "some code" 
-                },
-                 {
-                    "label": "Vertical Flip",
-                    "url" : v_flip_url ,
-                    "code" : "some code" 
-                },
-                {
-                    "label": "Rotate",
-                    "url" : rotate_url ,
-                    "code" : "some code" 
-                },
-                {
-                    "label": "Image Wrap",
-                    "url" : special_mode_url ,
-                    "code" : "some code" 
-                }
-                
-            ]
+            "data" : data 
             
         }
         return Response(response) 
@@ -165,4 +289,16 @@ def image_processing(request):
         return Response(response) 
 
 
+@api_view(['POST'])
+def demo(request):
+        print('check')
+        # city_name = json.loads(request.POST.get('types'))
+        # print(city_name)
+        img = request.FILES["image"] 
+        pil_img = Image.open(img)
+        cv_img = np.array(pil_img) 
+        blur_img = r( cv_img ,180 ) 
 
+        plt.imshow(blur_img) 
+        plt.show() 
+        HttpResponse('done') 

@@ -8,7 +8,27 @@ def fill(img, h, w):
     img = cv2.resize(img, (h, w), cv2.INTER_CUBIC)
     return img
 
-#  shifting        
+#  shifting    
+# 
+
+def blur(img , n ):
+    image_blurred = cv2.blur(img, ksize=(n,n) )    
+    h, w = img.shape[:2] 
+    img = fill(image_blurred, h, w) 
+    return img 
+
+def sharpen(img) :
+    kernel = np.array([[0, -1, 0], 
+                   [-1, 5,-1], 
+                   [0, -1, 0]])
+
+    # Sharpen image
+    image_sharp = cv2.filter2D(img, -1, kernel) 
+    h, w = img.shape[:2] 
+    img = fill(image_sharp, h, w)  
+    return img 
+
+
 def horizontal_shift(img, ratio=0.0):
     if ratio > 1 or ratio < 0:
         print('Value should be less than 1 and greater than 0')
