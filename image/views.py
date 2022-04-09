@@ -90,7 +90,7 @@ def image_processing(request):
 
             if str(item['name']).strip() == 'vertical_shift':
                 try:
-                    val =float(item['value']) /100 
+                    val =float(item['value'][0]  ) /100 
                     vertical_shift_img = vertical_shift(cv_img , val ) 
                     v_shift_url=get_URL(vertical_shift_img,"v_shift_img") 
                     t= {   
@@ -105,7 +105,7 @@ def image_processing(request):
         ###  horizontal shift and ratio  
             elif str(item['name']).strip() == 'horizontal_shift' :
                 try:
-                    val =float(item['value']) /100 
+                    val =float(item['value'][0]) /100 
                     horizontal_shift_img = horizontal_shift(cv_img , val ) 
                     h_shift_url =get_URL(horizontal_shift_img,"h_shift_img") 
 
@@ -122,7 +122,7 @@ def image_processing(request):
         # ### Zooming
             elif str(item['name']).strip() == 'zoom' :
                 try:
-                    val =float(item['value']) /100 
+                    val =float(item['value'][0]) /100 
                     zoom_img = zoom(cv_img, val)
                     zoom_url = get_URL(zoom_img ,"zoom_img") 
 
@@ -177,7 +177,7 @@ def image_processing(request):
                 try:
                     # val =float(item['value']) /100 
                    ### Rotation
-                    rotate_img = rotation(cv_img, int(item['value']) ) 
+                    rotate_img = rotation(cv_img, int(item['value'][0]) ) 
                     rotate_url = get_URL(rotate_img,"rotate_img") 
 
                     t= {          
@@ -196,7 +196,7 @@ def image_processing(request):
                 try:
                     # val =float(item['value']) /100 
                    ### Blur image 
-                    blur_img = blur( cv_img , int(item['value']) ) 
+                    blur_img = blur( cv_img , int(item['value'][0]) ) 
                     blur_url= get_URL(blur_img,"blur_img") 
 
                     t= {          
