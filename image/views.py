@@ -230,10 +230,10 @@ def image_processing(request):
             
             elif str(item['name']).strip() == 'wrap' :
                 try:
-                    # val =float(item['value']) /100 
+                    val =float(item['value'][0]) /100 
                    ### Blur image 
                     ### MODING ...wrap ,nearest , reflect , constant
-                    special_mode_img = horizontal_shift_mode(cv_img, .5 ,'wrap')
+                    special_mode_img = horizontal_shift_mode(cv_img, val ,'wrap')
                     wrap_url = get_URL(special_mode_img,"special_mode_img") 
 
                     t= {          
@@ -245,12 +245,30 @@ def image_processing(request):
 
                 except:
                     pass 
+            
+            elif str(item['name']).strip() == 'reflect_mode' :
+                try:
+                    val =float(item['value'][0]) /100 
+                   ### Blur image 
+                    ### MODING ...wrap ,nearest , reflect , constant
+                    special_mode_img_reflection = horizontal_shift_mode(cv_img, val ,'reflect')
+                    reflection_url = get_URL(special_mode_img,"special_mode_img") 
+
+                    t= {          
+                     "label": "Image Reflection",
+                    "url" : reflection_url,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
 
             elif str(item['name']).strip() == 'brightness' :
                 try:
-                    # val =float(item['value']) /100 
+                    val =int(item['value'][0]) + 140
                    ### Brightness 
-                    bright_img = brightness( cv_img ,180 ) 
+                    bright_img = brightness( cv_img ,val ) 
                     bright_url= get_URL(bright_img,"bright_image")
 
                     t= {          
@@ -266,9 +284,9 @@ def image_processing(request):
             
             elif str(item['name']).strip()== 'contrast' :
                 try:
-                    # val =float(item['value']) /100 
+                    val =int(item['value'][0]) + 140
                    ### contrast 
-                    contrast_img = contrast( cv_img ,180 ) 
+                    contrast_img = contrast( cv_img ,val ) 
                     contrast_url= get_URL(contrast_img,"contrast_img") 
 
                     t= {          
