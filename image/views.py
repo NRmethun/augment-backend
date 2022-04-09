@@ -88,7 +88,7 @@ def image_processing(request):
         for item in types:
         ### vertical shift and ratio  
 
-            if item['name'] == 'vertical_shift':
+            if str(item['name']).strip() == 'vertical_shift':
                 try:
                     val =float(item['value']) /100 
                     vertical_shift_img = vertical_shift(cv_img , val ) 
@@ -103,7 +103,7 @@ def image_processing(request):
                     pass 
 
         ###  horizontal shift and ratio  
-            elif item['name'] == 'horizontal_shift' :
+            elif str(item['name']).strip() == 'horizontal_shift' :
                 try:
                     val =float(item['value']) /100 
                     horizontal_shift_img = horizontal_shift(cv_img , val ) 
@@ -120,7 +120,7 @@ def image_processing(request):
                     pass 
 
         # ### Zooming
-            elif item['name'] == 'zoom' :
+            elif str(item['name']).strip() == 'zoom' :
                 try:
                     val =float(item['value']) /100 
                     zoom_img = zoom(cv_img, val)
@@ -136,7 +136,7 @@ def image_processing(request):
                 except:
                     pass 
             
-            elif item['name'] == 'horizontal_flip' :
+            elif str(item['name']).strip() == 'horizontal_flip' :
                 try:
                     # val =float(item['value']) /100 
                     ### horizontal Flip 
@@ -154,7 +154,7 @@ def image_processing(request):
                 except:
                     pass 
 
-            elif item['name'] == 'vertical_flip' :
+            elif str(item['name']).strip() == 'vertical_flip' :
                 try:
                     # val =float(item['value']) /100 
                     ### vertical Flip 
@@ -173,7 +173,7 @@ def image_processing(request):
                     pass 
 
 
-            elif item['name'] == 'rotation' :
+            elif str(item['name']).strip()== 'rotation' :
                 try:
                     # val =float(item['value']) /100 
                    ### Rotation
@@ -192,7 +192,7 @@ def image_processing(request):
                     pass 
 
             
-            elif item['name'] == 'blur' :
+            elif str(item['name']).strip() == 'blur' :
                 try:
                     # val =float(item['value']) /100 
                    ### Blur image 
@@ -210,7 +210,7 @@ def image_processing(request):
                 except:
                     pass 
 
-            elif item['name'] == 'sharpen' :
+            elif str(item['name']).strip() == 'sharpen' :
                 try:
                     # val =float(item['value']) /100 
                    ### Blur image 
@@ -227,45 +227,148 @@ def image_processing(request):
 
                 except:
                     pass 
+            
+            elif str(item['name']).strip() == 'wrap' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### Blur image 
+                    ### MODING ...wrap ,nearest , reflect , constant
+                    special_mode_img = horizontal_shift_mode(cv_img, .5 ,'wrap')
+                    wrap_url = get_URL(special_mode_img,"special_mode_img") 
+
+                    t= {          
+                     "label": "Image Wrap",
+                    "url" : wrap_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif item['name'] == 'brightness' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### Brightness 
+                    bright_img = brightness( cv_img ,180 ) 
+                    bright_url= get_URL(bright_img,"bright_image")
+
+                    t= {          
+                     "label": "Image Wrap",
+                    "url" : wrap_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            
+            elif str(item['name']).strip()== 'contrast' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### contrast 
+                    contrast_img = contrast( cv_img ,180 ) 
+                    contrast_url= get_URL(contrast_img,"contrast_img") 
+
+                    t= {          
+                    "label": "contrast",
+                    "url" : contrast_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif str(item['name']).strip() == 'to_hsv' :
+                try:
+                    # val =float(item['value']) /100 
+                   ### to rgb to hsv 
+                    hsv_img = to_hsv(cv_img) 
+                    hsv_url = get_URL(hsv_img,"hsv_img")  
+
+                    t= {          
+                    "label": "HSV color-space",
+                    "url" : hsv_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+            
+            elif str(item['name']).strip() == 'to_gray' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### to rgb to gray 
+                    gray_img = to_gray(cv_img) 
+                    gray_url = get_URL(gray_img ,'gray_img') 
+
+                    t= {          
+                    "label": "Gray image",
+                    "url" : gray_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif str(item['name']).strip() == 'to_r' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### red channel 
+                    red_img = to_r(cv_img) 
+                    red_url = get_URL(red_img ,'red_img') 
+
+                    t= {          
+                    "label": "Red channel",
+                    "url" : red_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+            
+            elif str(item['name']).strip() == 'to_g' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### green channel 
+                    green_img = to_g(cv_img) 
+                    green_url = get_URL(green_img ,'green_img') 
+
+                    t= {          
+                    "label": "Green  channel",
+                    "url" : green_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
+
+            elif str(item['name']).strip()  == 'to_b' :
+                try:
+                    # val =float(item['value']) /100 
+                    ### green channel 
+                            ### blue channel 
+                    blue_img = to_b(cv_img) 
+                    blue_url = get_URL(blue_img ,'blue_img') 
+
+                    t= {          
+                    "label": "Blue  channel",
+                    "url" : blue_url ,
+                    "code" : "some code" 
+                    } 
+                    data.append(t) 
+
+                except:
+                    pass 
         
 
-
-        ### MODING ...wrap ,nearest , reflect , constant
-        special_mode_img = horizontal_shift_mode(cv_img, .5 ,'wrap')
-        special_mode_url = get_URL(special_mode_img,"special_mode_img") 
-
-
-        ### Brightness 
-        bright_img = brightness( cv_img ,180 ) 
-        bright_url= get_URL(bright_img,"bright_image")
-
-        ### contrast 
-        contrast_img = contrast( cv_img ,180 ) 
-        contrast_url= get_URL(contrast_img,"contrast_img") 
-
-        ### to rgb to hsv 
-        hsv_img = to_hsv(cv_img) 
-        hsv_url = get_URL(hsv_img,"hsv_img")  
-
-        ### to rgb to gray 
-        gray_img = to_gray(cv_img) 
-        gray_url = get_URL(gray_img ,'gray_img') 
-
-        ### red channel 
-        red_img = to_r(cv_img) 
-        red_url = get_URL(red_img ,'red_img') 
-
-        ### green channel 
-        green_img = to_g(cv_img) 
-        green_url = get_URL(green_img ,'green_img') 
-
-        ### blue channel 
-        blue_img = to_b(cv_img) 
-        blue_url = get_URL(blue_img ,'blue_img') 
-         
-
-
-        
+        print(data) 
 
         response={
             "status": 200 ,
